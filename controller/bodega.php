@@ -46,13 +46,11 @@ switch ($_GET["op"]) {
             echo json_encode($response);
         }
         break;
-        
         case "Comprar":
             if (isset($body["codigo_producto"], $body["cantidad"])) {
                 $codigo_producto = $body["codigo_producto"];
                 $cantidad = $body["cantidad"];
                 $compra_exitosa = $categoria->comprar_producto($codigo_producto, $cantidad);
-    
                 if ($compra_exitosa) {
                     $response = array("status" => "success", "message" => "Compra realizada con éxito");
                     echo json_encode($response);
@@ -65,7 +63,6 @@ switch ($_GET["op"]) {
                 echo json_encode($response);
             }
             break;
-
             case "Producto":
                 if (
                     isset($body["nombre"], $body["precio"], $body["fecha_vencimiento"], $body["cantidad_stock"])
@@ -74,21 +71,24 @@ switch ($_GET["op"]) {
                     && $body["fecha_vencimiento"] !== null
                     && $body["cantidad_stock"] !== null
                 ) {
-                    // Lógica para manejar el caso de "Producto"
                     $resultado = $categoria->post_productos(
                         $body["nombre"],
                         $body["precio"],
                         $body["fecha_vencimiento"],
                         $body["cantidad_stock"]
                     );
-            
                     echo json_encode($resultado);
                 } else {
-                    // Informar sobre campos faltantes o nulos
                     echo json_encode(["status" => "error", "message" => "Campos requeridos no presentes o nulos"]);
                 }
                 break;
-            
-            
-}
+                    case "GetV":
+                        $datos = $categoria->get_ventas();
+                        echo json_encode($datos);
+                    break;
+                    case "GetP":
+                        $datos = $categoria->get_productos();
+                        echo json_encode($datos);
+                    break;
+            }
 ?>

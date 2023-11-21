@@ -61,7 +61,7 @@ class Categoria extends Conectar {
             return false;
         }
 }
-public function comprar_producto($codigo_producto, $cantidad_Compra) {
+    public function comprar_producto($codigo_producto, $cantidad_Compra) {
     $conectar = parent::conexion();
     parent::set_names();
     $conectar->beginTransaction();
@@ -71,12 +71,8 @@ public function comprar_producto($codigo_producto, $cantidad_Compra) {
         $stmt_select_stock->bindValue(1, $codigo_producto);
         $stmt_select_stock->execute();
         $stock_actual = $stmt_select_stock->fetchColumn();
-        //cantidad minima de stock que podría haber
         $cantidad_minima = 50;
-        
-        // Agrega estas líneas para depuración
         echo "Stock actual: $stock_actual, Cantidad mínima: $cantidad_minima";
-
         if ($stock_actual <= $cantidad_minima) {
             $nuevo_stock = $stock_actual + $cantidad_Compra;
             $sql_update_stock = "UPDATE productos SET cantidad_stock=? WHERE codigo_producto=?";
@@ -84,7 +80,6 @@ public function comprar_producto($codigo_producto, $cantidad_Compra) {
             $stmt_update_stock->bindValue(1, $nuevo_stock);
             $stmt_update_stock->bindValue(2, $codigo_producto);
             $stmt_update_stock->execute();
-
             $fecha_compra = date("Y-m-d H:i:s");
             $sql_insert_venta = "INSERT INTO compra (fecha_compra, cantidad_compra, codigo_producto) VALUES (?, ?, ?)";
             $stmt_insert_venta = $conectar->prepare($sql_insert_venta);
@@ -92,7 +87,6 @@ public function comprar_producto($codigo_producto, $cantidad_Compra) {
             $stmt_insert_venta->bindValue(2, $cantidad_Compra);
             $stmt_insert_venta->bindValue(3, $codigo_producto);
             $stmt_insert_venta->execute();
-
             $conectar->commit();
             return true;
         } else {
@@ -103,28 +97,36 @@ public function comprar_producto($codigo_producto, $cantidad_Compra) {
         return false;
     }
 }
-public function post_productos($nombre, $precio, $fecha_vencimiento, $cantidad_stock)
-{
+    public function post_productos($nombre, $precio, $fecha_vencimiento, $cantidad_stock){
     $conectar = parent::Conexion();
     parent::set_names();
-
     try {
-        // Iniciar transacción
-        $conectar->beginTransaction();
-
-        // Insertar en la tabla "productos"
-        $sql_productos = "INSERT INTO productos (nombre, precio, fecha_vencimiento, cantidad_stock) VALUES (?, ?, ?, ?)";
-        $stmt_productos = $conectar->prepare($sql_productos);
-        $stmt_productos->execute([$nombre, $precio, $fecha_vencimiento, $cantidad_stock]);
-
-        // Confirmar transacción
-        $conectar->commit();
-
-        return ["status" => "success", "message" => "Registro insertado correctamente"];
-    } catch (Exception $e) {
+            $conectar->beginTransaction();
+            $sql_productos = "INSERT INTO productos (nombre, precio, fecha_vencimiento, cantidad_stock) VALUES (?, ?, ?, ?)";
+            $stmt_productos = $conectar->prepare($sql_productos);
+            $stmt_productos->execute([$nombre, $precio, $fecha_vencimiento, $cantidad_stock]);
+            $conectar->commit();
+            return ["status" => "success", "message" => "Registro insertado correctamente"];
+        } catch (Exception $e) {
         $conectar->rollBack();
         return ["status" => "error", "message" => "Error al insertar el registro: " . $e->getMessage()];
     }
+}
+        public function get_ventas() {
+            $conectar = parent::conexion();
+            parent::set_names();
+            $sql = "SELECT * FROM `ventas`";
+            $sql = $conectar->prepare($sql);
+                $sql->execute();
+        return $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
+}
+        public function get_productos() {
+            $conectar = parent::conexion();
+            parent::set_names();
+            $sql = "SELECT * FROM `productos`";
+            $sql = $conectar->prepare($sql);
+            $sql->execute();
+        return $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
 }
 }
 
