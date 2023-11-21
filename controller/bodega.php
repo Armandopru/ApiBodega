@@ -46,5 +46,24 @@ switch ($_GET["op"]) {
             echo json_encode($response);
         }
         break;
+        
+        case "Compra":
+            if (isset($body["codigo_producto"], $body["cantidad"])) {
+                $codigo_producto = $body["codigo_producto"];
+                $cantidad = $body["cantidad"];
+                $compra_exitosa = $categoria->comprar_producto($codigo_producto, $cantidad);
+    
+                if ($compra_exitosa) {
+                    $response = array("status" => "success", "message" => "Compra realizada con éxito");
+                    echo json_encode($response);
+                } else {
+                    $response = array("status" => "error", "message" => "No se pudo realizar la compra");
+                    echo json_encode($response);
+                }
+            } else {
+                $response = array("status" => "error", "message" => "Datos mal ingresados");
+                echo json_encode($response);
+            }
+            break;
 }
 ?>
