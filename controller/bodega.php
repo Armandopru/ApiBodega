@@ -47,7 +47,7 @@ switch ($_GET["op"]) {
         }
         break;
         
-        case "Compra":
+        case "Comprar":
             if (isset($body["codigo_producto"], $body["cantidad"])) {
                 $codigo_producto = $body["codigo_producto"];
                 $cantidad = $body["cantidad"];
@@ -65,5 +65,30 @@ switch ($_GET["op"]) {
                 echo json_encode($response);
             }
             break;
+
+            case "Producto":
+                if (
+                    isset($body["nombre"], $body["precio"], $body["fecha_vencimiento"], $body["cantidad_stock"])
+                    && $body["nombre"] !== null
+                    && $body["precio"] !== null
+                    && $body["fecha_vencimiento"] !== null
+                    && $body["cantidad_stock"] !== null
+                ) {
+                    // Lógica para manejar el caso de "Producto"
+                    $resultado = $categoria->post_productos(
+                        $body["nombre"],
+                        $body["precio"],
+                        $body["fecha_vencimiento"],
+                        $body["cantidad_stock"]
+                    );
+            
+                    echo json_encode($resultado);
+                } else {
+                    // Informar sobre campos faltantes o nulos
+                    echo json_encode(["status" => "error", "message" => "Campos requeridos no presentes o nulos"]);
+                }
+                break;
+            
+            
 }
 ?>

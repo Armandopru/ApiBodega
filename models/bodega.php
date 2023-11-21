@@ -103,5 +103,29 @@ public function comprar_producto($codigo_producto, $cantidad_Compra) {
         return false;
     }
 }
+public function post_productos($nombre, $precio, $fecha_vencimiento, $cantidad_stock)
+{
+    $conectar = parent::Conexion();
+    parent::set_names();
+
+    try {
+        // Iniciar transacción
+        $conectar->beginTransaction();
+
+        // Insertar en la tabla "productos"
+        $sql_productos = "INSERT INTO productos (nombre, precio, fecha_vencimiento, cantidad_stock) VALUES (?, ?, ?, ?)";
+        $stmt_productos = $conectar->prepare($sql_productos);
+        $stmt_productos->execute([$nombre, $precio, $fecha_vencimiento, $cantidad_stock]);
+
+        // Confirmar transacción
+        $conectar->commit();
+
+        return ["status" => "success", "message" => "Registro insertado correctamente"];
+    } catch (Exception $e) {
+        $conectar->rollBack();
+        return ["status" => "error", "message" => "Error al insertar el registro: " . $e->getMessage()];
+    }
 }
+}
+
 ?>
