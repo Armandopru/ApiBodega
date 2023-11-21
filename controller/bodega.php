@@ -25,7 +25,7 @@ switch ($_GET["op"]) {
         }
         break;
     case "Delete":
-        $datos = $categoria->delete_bodega($body["codigo_producto"]);
+        $datos = $categoria->delete_bodega($body["id_ventas"]);
         echo json_encode($datos);
         break;
     case "Vender":
@@ -86,8 +86,8 @@ switch ($_GET["op"]) {
                         $datos = $categoria->get_ventas();
                         echo json_encode($datos);
                     break;
-                    case "GetP":
-                        $datos = $categoria->get_productos();
+                    case "GetC":
+                        $datos = $categoria->get_compra();
                         echo json_encode($datos);
                     break;
             }
