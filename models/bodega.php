@@ -30,8 +30,8 @@ class Categoria extends Conectar {
     public function vender_producto($codigo_producto, $cantidad) {
         $conectar = parent::conexion();
         parent::set_names();
-        $conectar->beginTransaction();
         try {
+            $conectar->beginTransaction();
             $sql_select_stock = "SELECT cantidad_stock FROM productos WHERE codigo_producto=?";
             $stmt_select_stock = $conectar->prepare($sql_select_stock);
             $stmt_select_stock->bindValue(1, $codigo_producto);
@@ -44,7 +44,6 @@ class Categoria extends Conectar {
                 $stmt_update_stock->bindValue(1, $nuevo_stock);
                 $stmt_update_stock->bindValue(2, $codigo_producto);
                 $stmt_update_stock->execute();
-
                 $fecha_venta = date("Y-m-d");
                 $sql_insert_venta = "INSERT INTO ventas (fecha_venta, cantidades_vendidas, fk_producto) VALUES (?, ?, ?)";
                 $stmt_insert_venta = $conectar->prepare($sql_insert_venta);
@@ -52,7 +51,6 @@ class Categoria extends Conectar {
                 $stmt_insert_venta->bindValue(2, $cantidad);
                 $stmt_insert_venta->bindValue(3, $codigo_producto);
                 $stmt_insert_venta->execute();
-
                 $conectar->commit();
                 return true;
             } else {
