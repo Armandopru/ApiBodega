@@ -18,12 +18,12 @@ class Categoria extends Conectar {
         $sql->execute();
         return true;
     }
-    public function delete_bodega($codigo_producto) {
+    public function delete_bodega($id_ventas) {
         $conectar = parent::conexion();
         parent::set_names();
-        $sql = "DELETE FROM productos WHERE codigo_producto=?";
+        $sql = "DELETE FROM ventas WHERE id_ventas=?";
         $sql = $conectar->prepare($sql);
-        $sql->bindValue(1, $codigo_producto);
+        $sql->bindValue(1, $id_ventas);
         $sql->execute();
         return true;
     }
@@ -44,7 +44,7 @@ class Categoria extends Conectar {
                 $stmt_update_stock->bindValue(1, $nuevo_stock);
                 $stmt_update_stock->bindValue(2, $codigo_producto);
                 $stmt_update_stock->execute();
-                $fecha_venta = date("Y-m-d");
+                $fecha_venta = date("Y-m-d H:i:s");
                 $sql_insert_venta = "INSERT INTO ventas (fecha_venta, cantidades_vendidas, fk_producto) VALUES (?, ?, ?)";
                 $stmt_insert_venta = $conectar->prepare($sql_insert_venta);
                 $stmt_insert_venta->bindValue(1, $fecha_venta);
@@ -60,12 +60,12 @@ class Categoria extends Conectar {
             $conectar->rollBack();
             return false;
         }
-}
+    }
     public function comprar_producto($codigo_producto, $cantidad_Compra) {
-    $conectar = parent::conexion();
-    parent::set_names();
-    $conectar->beginTransaction();
-    try {
+        $conectar = parent::conexion();
+        parent::set_names();
+        $conectar->beginTransaction();
+        try {
         $sql_select_stock = "SELECT cantidad_stock FROM productos WHERE codigo_producto=?";
         $stmt_select_stock = $conectar->prepare($sql_select_stock);
         $stmt_select_stock->bindValue(1, $codigo_producto);
@@ -96,11 +96,11 @@ class Categoria extends Conectar {
         $conectar->rollBack();
         return false;
     }
-}
+    }
     public function post_productos($nombre, $precio, $fecha_vencimiento, $cantidad_stock){
-    $conectar = parent::Conexion();
-    parent::set_names();
-    try {
+        $conectar = parent::Conexion();
+        parent::set_names();
+        try {
             $conectar->beginTransaction();
             $sql_productos = "INSERT INTO productos (nombre, precio, fecha_vencimiento, cantidad_stock) VALUES (?, ?, ?, ?)";
             $stmt_productos = $conectar->prepare($sql_productos);
@@ -111,7 +111,7 @@ class Categoria extends Conectar {
         $conectar->rollBack();
         return ["status" => "error", "message" => "Error al insertar el registro: " . $e->getMessage()];
     }
-}
+    }
         public function get_ventas() {
             $conectar = parent::conexion();
             parent::set_names();
@@ -119,35 +119,15 @@ class Categoria extends Conectar {
             $sql = $conectar->prepare($sql);
                 $sql->execute();
         return $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
-}
-        public function get_productos() {
+    }
+        public function get_compra() {
             $conectar = parent::conexion();
             parent::set_names();
-            $sql = "SELECT * FROM `productos`";
+            $sql = "SELECT * FROM `compra`";
             $sql = $conectar->prepare($sql);
             $sql->execute();
         return $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
 }
-
-public function fecha_venta($fecha_venta) {
-    $conectar = parent::Conexion();
-    parent::set_names();
-    $sql = "SELECT v.*, p.nombre, p.precio FROM `ventas` v INNER JOIN productos p ON v.fk_producto = p.codigo_producto WHERE v.`fecha_venta` = ?;";
-    $sql = $conectar->prepare($sql);
-    $sql->bindValue(1, $fecha_venta);
-    $sql->execute();
-    return $resultado=$sql->fetchAll(PDO::FETCH_ASSOC);
-}
-public function fecha_compra($fecha_compra) {
-    $conectar = parent::Conexion();
-    parent::set_names();
-    $sql = "SELECT c.*, p.nombre, p.precio FROM `compra` c INNER JOIN productos p ON c.codigo_producto = p.codigo_producto WHERE c.`fecha_compra` = ?;";
-    $sql = $conectar->prepare($sql);
-    $sql->bindValue(1, $fecha_compra);
-    $sql->execute();
-    return $resultado=$sql->fetchAll(PDO::FETCH_ASSOC);
-}
-
 }
 
 ?>
