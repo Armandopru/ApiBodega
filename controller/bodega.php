@@ -90,5 +90,16 @@ switch ($_GET["op"]) {
                         $datos = $categoria->get_productos();
                         echo json_encode($datos);
                     break;
+
+                    case "GetFechaV":
+                        $datos = $categoria->fecha_venta($body["fecha_venta"]);
+                        echo json_encode($datos);
+                        break;
+
+                    case "GetFechaC":
+                        $datos = $categoria->fecha_compra($body["fecha_compra"]);
+                        echo json_encode($datos);
+                        break;
             }
+
 ?>

@@ -128,6 +128,26 @@ class Categoria extends Conectar {
             $sql->execute();
         return $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
 }
+
+public function fecha_venta($fecha_venta) {
+    $conectar = parent::Conexion();
+    parent::set_names();
+    $sql = "SELECT v.*, p.nombre, p.precio FROM `ventas` v INNER JOIN productos p ON v.fk_producto = p.codigo_producto WHERE v.`fecha_venta` = ?;";
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $fecha_venta);
+    $sql->execute();
+    return $resultado=$sql->fetchAll(PDO::FETCH_ASSOC);
+}
+public function fecha_compra($fecha_compra) {
+    $conectar = parent::Conexion();
+    parent::set_names();
+    $sql = "SELECT c.*, p.nombre, p.precio FROM `compra` c INNER JOIN productos p ON c.codigo_producto = p.codigo_producto WHERE c.`fecha_compra` = ?;";
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $fecha_compra);
+    $sql->execute();
+    return $resultado=$sql->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }
 
 ?>
