@@ -71,7 +71,7 @@ class Categoria extends Conectar {
         $stmt_select_stock->bindValue(1, $codigo_producto);
         $stmt_select_stock->execute();
         $stock_actual = $stmt_select_stock->fetchColumn();
-        $cantidad_minima = 50;
+        $cantidad_minima = 300;
         echo "Stock actual: $stock_actual, Cantidad mínima: $cantidad_minima";
         if ($stock_actual <= $cantidad_minima) {
             $nuevo_stock = $stock_actual + $cantidad_Compra;
