@@ -1,4 +1,5 @@
 <?php
+//HOLA
 class Conectar {
     protected $dbh;
 
