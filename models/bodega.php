@@ -127,7 +127,6 @@ class Categoria extends Conectar {
             $sql = $conectar->prepare($sql);
             $sql->execute();
         return $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
-<<<<<<< HEAD
 }
 
 public function fecha_venta($fecha_venta) {
@@ -149,9 +148,6 @@ public function fecha_compra($fecha_compra) {
     return $resultado=$sql->fetchAll(PDO::FETCH_ASSOC);
 }
 
-=======
-    }
->>>>>>> b349f1836532f29a911e02095f8217fa54ca9785
 }
 
 ?>
